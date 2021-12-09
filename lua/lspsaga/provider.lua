@@ -443,7 +443,15 @@ function lspfinder.preview_definition(timeout_ms)
     print("No location found: " .. method)
     return nil
   end
-  result = {vim.tbl_deep_extend("force", {}, unpack(result))}
+  local non_empty_res
+  -- Result is not empty - there must be at least one element at this point
+  for k, v in pairs(result) do
+      if v ~= nil then
+        non_empty_res = v
+      end
+  end
+
+  result = {vim.tbl_deep_extend("force", {}, non_empty_res)}
 
   if vim.tbl_islist(result) and not vim.tbl_isempty(result[1]) then
     local uri = result[1].result[1].uri or result[1].result[1].targetUri
